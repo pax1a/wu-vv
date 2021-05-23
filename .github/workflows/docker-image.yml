@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+    
+      run: |
+          docker build -t ghcr.io/pax1a/wu-vv/shiny:$GITHUB_RUN_NUMBER -f Dockerfile .
+          echo $CR_PAT | docker login ghcr.io -u pax1a --password-stdin
+          docker push ghcr.io/pax1a/wu-vv/shiny:$GITHUB_RUN_NUMBER
+      env:
+          CR_PAT: ${{ secrets.GITHUB_TOKEN }}
